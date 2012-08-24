@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Threading;
 
@@ -201,16 +203,12 @@ namespace ConditionSystem
             return restart(param);
         }
 
-        public static IDictionary<string, RestartBindCallback> ComputeRestarts()
+        public static IEnumerable<Tuple<string, RestartBindCallback>> ComputeRestarts()
         {
             var restarts = new Dictionary<string, RestartBindCallback>();
             Thread currentThread = Thread.CurrentThread;
             var clusters = _restartStacks.GetOrCreateValue(currentThread);
-            foreach (var c in clusters)
-            {
-                restarts.Add(c.Item1, c.Item2);
-            }
-            return restarts;
+            return clusters.AsEnumerable();
         }
     }
 }
